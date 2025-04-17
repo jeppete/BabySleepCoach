@@ -1,6 +1,9 @@
 services:
 
   baby-sleep-coach:
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     build:
       dockerfile: ./Dockerfile
       context: .
@@ -14,5 +17,5 @@ services:
       - .:/usr/app/babysleepcoach
       - /usr/app/babysleepcoach/webapp/node_modules
     # To use a webcam, uncomment these lines
-    # devices:
+    devices:
       - /dev/video0
