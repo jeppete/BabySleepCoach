@@ -15,4 +15,4 @@ services:
       - /usr/app/babysleepcoach/webapp/node_modules
     # To use a webcam, uncomment these lines
     # devices:
-    #   - /dev/video0
+      - /dev/video0
