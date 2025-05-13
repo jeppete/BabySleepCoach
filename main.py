@@ -272,7 +272,7 @@ class SleepyBaby():
     # TODO: Fine-tune sensitivity of voting, for now, don't allow toggling between wake & sleep within N seconds
     @debounce(180)
     def write_wakeness_event(self, wake_status, img):
-        str_timestamp = str(int(time.time()))
+        str_timestamp = str(int(datetime.datetime.now().timestamp()))
         sleep_data_base_path = os.getenv("APP_DIR")
         p = sleep_data_base_path + '/' + str_timestamp + '.png'
         if wake_status: # woke up
