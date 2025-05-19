@@ -21,3 +21,5 @@ build
 !.dockerignore
 !blanket_model
 !blanket_model/**
+!analyze_sleep.py
+!sleep_heatmap.py

@@ -3,20 +3,32 @@ FROM node:slim
 WORKDIR /usr/app/babysleepcoach
 EXPOSE 80
 
-#Copy the pip build files in first
+# Install required system packages
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+RUN apt-get update && apt-get install -y cron python3-pip libgl1 libglib2.0-0
+
+# Python dependencies
 COPY ./requirements.txt .
+RUN pip3 install --upgrade pip && \
+    pip3 install -r requirements.txt
 
-# Install required packages
-ENV PIP_BREAK_SYSTEM_PACKAGES 1
-RUN apt-get update && apt-get install python3-pip libgl1 libglib2.0-0  -y
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
-
-# Copy in the rest of the files
+# Copy all files into the image
 COPY . .
 
+# Cron configuration
+RUN echo '0 0 * * * root /usr/bin/python3 /usr/app/babysleepcoach/analyze_sleep.py >> /sleep_analysis.log' > /etc/cron.d/sleep_analysis
+RUN chmod 0644 /etc/cron.d/sleep_analysis && \
+    touch /var/log/cron.log
+
+# Cron configuration
+RUN echo '0 0 * * * root /usr/bin/python3 /usr/app/babysleepcoach/sleep_heatmap.py >> /sleep_heatmap.log' > /etc/cron.d/sleep_heatmap
+RUN chmod 0644 /etc/cron.d/sleep_heatmap && \
+    touch /var/log/cron.log
+
+# Install React app dependencies
 RUN cd webapp && yarn install && cd ..
 
-WORKDIR /usr/app/babysleepcoach
+# Make entrypoint executable
+RUN chmod +x start_docker.sh
 
-ENTRYPOINT ["bash", "start_docker.sh"]
+ENTRYPOINT ["./start_docker.sh"]
